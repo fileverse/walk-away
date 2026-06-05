@@ -7,7 +7,7 @@ import {
   decryptNewFile,
 } from '../utils/new-file-decryption'
 import { Skeleton } from './retrieve-section'
-import { DsheetEditor } from '@fileverse-dev/dsheet'
+import { DSheetEditor } from '@fileverse-dev/dsheet'
 import {
   getNewContractFile,
   getNewPortalFileCount,
@@ -19,7 +19,6 @@ import {
 import { eciesDecrypt } from '@fileverse/crypto/ecies'
 import { toBytes } from '@fileverse/crypto/utils'
 import { fromUint8Array } from 'js-base64'
-import { handleExportToCSV } from '@fileverse-dev/dsheet'
 
 const DsheetsRetrieveSection = () => {
   const navigate = useNavigate()
@@ -42,44 +41,36 @@ const DsheetsRetrieveSection = () => {
   const cssLinkRef = useRef(null)
   const getYdocRef = () => ({ current: window?.ydocRef })
 
-  // Dynamically load fortune-react CSS only when component mounts
+  // Dynamically load dsheet styles only when component mounts
   useEffect(() => {
-    // Check if CSS is already loaded to avoid duplicates
-    const existingLink = document.getElementById('fortune-react-css')
+    const existingLink = document.getElementById('dsheet-styles')
     if (existingLink) {
       cssLinkRef.current = existingLink
       return
     }
 
-    // Use Vite's ?url suffix to get the CSS file URL without importing it globally
-    // This allows us to inject it as a link element that we can remove later
-    import('@fileverse-dev/fortune-react/lib/index.css?url')
+    import('@fileverse-dev/dsheet/styles?url')
       .then((urlModule) => {
-        // Create and inject the CSS link element
         const link = document.createElement('link')
-        link.id = 'fortune-react-css'
+        link.id = 'dsheet-styles'
         link.rel = 'stylesheet'
         link.type = 'text/css'
         link.href = urlModule.default
-        link.setAttribute('data-fortune-react', 'true')
+        link.setAttribute('data-dsheet-styles', 'true')
 
-        // Append to document head
         document.head.appendChild(link)
         cssLinkRef.current = link
       })
       .catch((error) => {
-        // Fallback: if ?url doesn't work, try direct import
-        // This will add CSS globally but is better than nothing
         console.warn(
-          'Failed to load fortune-react CSS with ?url suffix, using fallback:',
+          'Failed to load dsheet styles with ?url suffix, using fallback:',
           error
         )
-        import('@fileverse-dev/fortune-react/lib/index.css').catch((err) => {
-          console.error('Fallback CSS import also failed:', err)
+        import('@fileverse-dev/dsheet/styles').catch((err) => {
+          console.error('Fallback dsheet styles import also failed:', err)
         })
       })
 
-    // Cleanup function to remove the CSS when component unmounts
     return () => {
       if (cssLinkRef.current && cssLinkRef.current.parentNode) {
         cssLinkRef.current.parentNode.removeChild(cssLinkRef.current)
@@ -147,6 +138,24 @@ const DsheetsRetrieveSection = () => {
       newSet.add(fileId)
       return newSet
     })
+  }
+
+  const handleExport = (type) => {
+    const ydocRef = getYdocRef()
+    import('@fileverse-dev/dsheet').then(
+      ({ handleExportToXLSX, handleExportToCSV }) => {
+        if (type === 'xlsx') {
+          handleExportToXLSX(
+            sheetEditorRef,
+            ydocRef,
+            contentData.dsheetId,
+            () => contentData.title
+          )
+        } else {
+          handleExportToCSV(sheetEditorRef, ydocRef)
+        }
+      }
+    )
   }
 
   return (
@@ -228,13 +237,19 @@ const DsheetsRetrieveSection = () => {
                   </span>
                   <div
                     onClick={() => {
-                      const ydocRef = getYdocRef()
-                      if (!ydocRef.current) return
-                      handleExportToCSV(sheetEditorRef, ydocRef)
+                      handleExport('csv')
                     }}
                     className="text-[12px] font-bold px-2 py-1 hover:bg-[#F8F9FA] rounded-[4px] border border-[#E8EBEC] cursor-pointer"
                   >
                     <span>.csv</span>
+                  </div>
+                  <div
+                    onClick={() => {
+                      handleExport('xlsx')
+                    }}
+                    className="text-[12px] font-bold px-2 py-1 hover:bg-[#F8F9FA] rounded-[4px] border border-[#E8EBEC] cursor-pointer"
+                  >
+                    <span>.xlsx</span>
                   </div>
                 </div>
               </div>
@@ -253,7 +268,7 @@ const DsheetsRetrieveSection = () => {
                 </div>
               ) : (
                 <div className="p-6 overflow-y-auto h-[calc(100vh-180px)] scrollbar-hide">
-                  <DsheetEditor
+                  <DSheetEditor
                     isReadOnly={true}
                     dsheetId={contentData.dsheetId}
                     sheetEditorRef={sheetEditorRef}
@@ -262,6 +277,7 @@ const DsheetsRetrieveSection = () => {
                     isNewSheet={false}
                     portalContent={content}
                     commentData={{}}
+                    allowSheetDownload={true}
                   />
                 </div>
               )}
