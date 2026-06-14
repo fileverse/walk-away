@@ -68,7 +68,7 @@ export const SettingsModalContent = ({ setShowModal }) => {
         <input
           type="text"
           className="text-[14px] w-full py-2 px-3 border border-[#E8EBEC] rounded-[4px] placeholder:text-[#77818A]"
-          placeholder="your-custom-gateway.mypinata.cloud, your-custom-gateway.mypinata.cloud"
+          placeholder="https://your-custom-gateway.mypinata.cloud, https://your-custom-gateway.mypinata.cloud"
           value={settings.pinataGateway}
           name="pinataGateway"
           onChange={handleSettingsChange}

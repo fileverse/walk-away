@@ -7,14 +7,19 @@ export const reconstructGateMetadata = async (
   metadataIpfsHash,
   gateIpfsHash
 ) => {
-  const [metadataResult, gateResult] = await Promise.all([
-    getIPFSAsset({ ipfsHash: metadataIpfsHash }),
-    getIPFSAsset({ ipfsHash: gateIpfsHash }),
-  ])
+  const promises = []
+  if (metadataIpfsHash) {
+    promises.push(getIPFSAsset({ ipfsHash: metadataIpfsHash }))
+  }
+  if (gateIpfsHash) {
+    promises.push(getIPFSAsset({ ipfsHash: gateIpfsHash }))
+  }
+
+  const [metadataResult, gateResult] = await Promise.all(promises)
 
   return {
     ...metadataResult.data,
-    linkLock: gateResult.data,
+    linkLock: gateResult?.data,
   }
 }
 
