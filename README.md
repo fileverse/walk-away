@@ -1,5 +1,12 @@
-# Walkaway
-This repo contains the code to independently recover all documents tied to your dDocs account using your back up key, in case the main [dDocs app](https://ddocs.new/) is down. Easily control your documents end-to-end without depending on centralized servers 💛
+# dDocs & dSheets Walkaway
+
+## About 
+How dDocs & dSheets pass the walkaway test with love 💛.
+
+An open-source static page to recover and decrypt documents & spreadsheets locally, without depending on Fileverse or centralized servers.
+
+## Intro
+This repo contains the code to independently recover documents and spreadsheets tied to your ddocs.new and dsheets.new account using your backup keys, in case the main apps are down. It’s designed to help you keep end-to-end control of your files, without depending on centralized servers.
 
 ## Prerequiste
 
@@ -50,13 +57,13 @@ Start the development server:
 
 ## Overview of the Backup Keys
 Your portal keys consist of :
-- **Portal Address** – The contract address that manages your files on ddocs.
-- **Owner Public Key** -  An RSA-generated public key used by the portal owner to encrypt their ddoc file data.
-- **Owner Private Key** - An RSA-generated private key used by the portal owner to decrypt their ddoc file data.
-- **Portal Public Key** - An RSA-generated public key used by portal collaborators to encrypt ddoc file data.
-- **Portal Private Key** - An RSA-generated private key used by the  collaborators to decrypt their ddoc file data.
-- **Member Public Key** - An RSA-generated public key used by portal members to encrypt their ddoc file data.
-- **Member Private Key** -  An RSA-generated private key used by portal members to decrypt their ddoc file data.
+- **Portal Address** – The contract address that manages your ddocs and dsheets files.
+- **Owner Public Key** -   An RSA-generated public key used by the portal owner to encrypt ddocs and dsheets file data.
+- **Owner Private Key** - An RSA-generated private key used by the portal owner to decrypt their ddocs and dsheets file data.
+- **Portal Public Key** - An RSA-generated public key used by collaborators to encrypt ddocs and dsheets file data shared with the portal.
+- **Portal Private Key** -  An RSA-generated private key used by collaborators to decrypt ddocs and dsheets file data shared with the portal.
+- **Member Public Key** -  An RSA-generated public key used by portal members to encrypt their own ddocs and dsheets file data.
+- **Member Private Key** -  An RSA-generated private key used by portal members to decrypt their own ddocs and dsheets file data.
 
 ## How are files linked to a portal ?
 Files are linked to a portal by the portal address and the fileID.
@@ -75,12 +82,6 @@ Files can be decrypted using any of the available locks:
 - **Link Lock** – Contains the encrypted file key, which is decrypted using the link key.
 
 You can refer to [this code](https://github.com/fileverse/walk-away-ddocs/blob/c37548d4b5b380b3597ee7e336e19cf3aec10531/src/components/retrieve-section.jsx#L42) for more 
-
-## How are comments linked to a file ?
-Comments are linked to a file by the ddoc’s portal address and ddocId.
-
-## How is a Comment Encrypted?
-A comment and its associated data are encrypted using a random AES key that is unique to each ddoc file. This AES key is then encrypted using the portal key, owner key, and link key to ensure secure access and controlled decryption.
 
 
 ## How is a Comment Decrypted?
