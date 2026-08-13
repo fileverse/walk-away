@@ -8,23 +8,11 @@ const OpenSource = () => {
         Open source
       </div>
       <div className="self-stretch text-[#363b3f] text-sm sm:text-base font-normal font-['Helvetica Neue'] leading-normal">
-        <p className="mt-5 text-[#77818a] text-base font-normal leading-normal">
-          Don't trust, verify. This static page is open-source, you can check
-          the code, modify it, and even host this page on your own. You can even
-          configure your own RPC endpoint and IPFS gateways. Here’s also the{' '}
-          <a
-            href="http://dzarjqakfkvzv2rzdidap6opdaohsawvn3slqbozqfd3ltc5kvealvyd.onion/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            .onion
-          </a>{' '}
-          root!
+        <p className="text-[#77818a] text-base font-normal leading-normal">
+          Don't trust, verify. This static page is open-source, you can check the code, modify it, and even self-host it for maximum autonomy and censorship resistance when retrieving your end-to-end encrypted files.
         </p>
         <p className="mt-5 text-[#77818a] text-base font-normal leading-normal">
-          We recommend downloading the page and self-hosting it if you want a
-          complete self-sovereign experience, minimizing trust assumptions while
-          increasing privacy and censorship resistance.
+          You can also access the page privately using its .onion address via the Tor Browser - dzarjqakfkvzv2rzdidap6opdaohsawvn3slqbozqfd3ltc5kvealvyd.onion; or access a decentralized <a href="https://walkaway.fileverse.eth.limo/" target="_blank" rel="noopener noreferrer" className="text-[#5C0AFF] hover:underline">hosted</a>  version.
         </p>
       </div>
       <div className="relative group"></div>

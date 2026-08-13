@@ -12,7 +12,7 @@ const HomePage = () => {
         </h1>
         <p className="font-normal text-base leading-6 text-[#77818A] mb-8">
           Independently recover all documents and spreadsheets tied to your
-          accounts in case the main dDocs and/or dSheets apps are down.
+          accounts in case the main apps are down.
         </p>
 
         {/* Upload Section */}
@@ -32,26 +32,27 @@ const HomePage = () => {
             >
               ddocs.new
             </a>{' '}
-            or{' '}
+            app or{' '}
             <a
               href="https://dsheets.new"
               target="_blank"
               className="text-[#5C0AFF] hover:underline"
             >
               dsheets.new
-            </a>
-            , you should always be in control of your documents and
-            spreadsheets. This static page gives you a simple way to directly
-            interact with the decentralized networks (Gnosis & IPFS) that ensure
-            the storage of your content. Doing so allows you to bypass
-            third-parties while downloading your documents and spreadsheets in
-            PDFs / .MD / .CSV and decrypting them locally.
+            </a>{' '}
+            app, you should always have a way to independently retrieve your
+            documents and spreadsheets. This page shows you how.
           </p>
 
           <p className="mt-5 text-[#77818a] text-base font-normal leading-normal">
-            Unlike big tech platforms that can access your data, censor it, or
-            arbitrarily revoke your account, dDocs and dSheets take steps to
-            offer you self-sovereignty by default. This{' '}
+            Unlike most Cloud-based apps, which can access your content, feed it
+            to AI, censor it, or lock you out of your account, dDocs and dSheets
+            are built to give you real data sovereignty and reliable backups.
+            You are the ultimate owner of your files.
+          </p>
+
+          <p className="mt-5 text-[#77818a] text-base font-normal leading-normal">
+            This{' '}
             <a
               href="https://walkaway.fileverse.eth.limo/"
               target="_blank"
@@ -59,13 +60,18 @@ const HomePage = () => {
             >
               static page
             </a>{' '}
-            is designed to make it easy for you to retrieve your documents and
-            spreadsheets end-to-end without depending on centralized servers or
-            the team behind Fileverse.
+            gives you a simple way to interact directly with the decentralized
+            networks (e.g. InterPlanetary File System) that hold the end-to-end
+            encrypted backups of your files. From here you can download your
+            documents and spreadsheets as PDF, Markdown (.md), or CSV files and
+            decrypt them locally using your Backup Key, with no centralized
+            third-parties in between. Nobody else can decrypt them but you.
           </p>
+
           <p className="mt-5 text-[#77818a] text-base font-normal leading-normal">
-            Built on Ethereum-aligned infrastructure, this page does not rely on
-            Fileverse to function.
+            What is a &quot;static&quot; page? It’s a website that runs entirely
+            in your browser, minimising the amount of server-side
+            processing.{' '}
           </p>
         </div>
 
