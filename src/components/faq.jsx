@@ -5,7 +5,7 @@ import ChevronIcon from '../assets/chevron-icon'
 /** @type {{ question: string, answer: import('react').ReactNode }[]} */
 const agentFaqs = [
   {
-    question: 'Where can I find my dDocs/dSheets Backup Keys?',
+    question: 'Where can I find my Backup Keys?',
     answer: (
       <>
         Go to either{' '}
@@ -47,24 +47,17 @@ const agentFaqs = [
     question: 'What are the advantages of a static page?',
     answer: (
       <>
-        This static page grants you greater agency over your files management. A
-        static page minimizes the amount of server-side processing, allowing you
-        to download the whole page, modify it, use it offline in complete
-        privacy, and configure your own infra (RPC endpoint and IPFS gateways)
-        to eliminate all third-party dependencies. <br />
+        This static page grants you greater agency over your files and backups.
+        A static page minimizes the amount of server-side processing, allowing
+        you to download the whole page, modify it, use it offline in complete
+        privacy, and configure your own infrastructure (eg. IPFS gateways) to
+        eliminate third-party dependencies.
+        <br />
         <br />
         The static page is also hosted and accessible via any public IPFS
         gateway from which you can download it, improving the
-        censorship-resistance of your documents & spreadsheets. It is
-        additionally accessible via its verifiable ENS domain using the{' '}
-        <a
-          href="https://walkaway.fileverse.eth.limo/"
-          target="_blank"
-          className="text-[#5C0AFF] hover:underline"
-        >
-          eth.limo
-        </a>{' '}
-        gateway, or over Tor hidden service via our{' '}
+        censorship-resistance of your documents & spreadsheets. It is also
+        accessible via Tor hidden service via our{' '}
         <a
           href="http://dzarjqakfkvzv2rzdidap6opdaohsawvn3slqbozqfd3ltc5kvealvyd.onion/"
           target="_blank"
@@ -72,11 +65,7 @@ const agentFaqs = [
         >
           .onion
         </a>{' '}
-        address.
-        <br />
-        <br />
-        This is the walkaway test in practice: the page works independently of
-        Fileverse.
+        address, and its verifiable ENS domain.
       </>
     ),
   },
@@ -155,9 +144,8 @@ const FAQ = () => {
         {agentFaqs.map((faq, index) => (
           <div
             key={index}
-            className={`border-b border-gray-200 ${
-              index === -1 ? 'border-t' : ''
-            }`}
+            className={`border-b border-gray-200 ${index === -1 ? 'border-t' : ''
+              }`}
           >
             <button
               className="w-full flex justify-between items-center py-3 sm:py-4 text-left cursor-pointer"
@@ -167,9 +155,8 @@ const FAQ = () => {
                 {faq.question}
               </span>
               <div
-                className={`transform transition-transform flex-shrink-0 ${
-                  openIndex === index ? 'rotate-180' : ''
-                }`}
+                className={`transform transition-transform flex-shrink-0 ${openIndex === index ? 'rotate-180' : ''
+                  }`}
               >
                 <ChevronIcon />
               </div>

@@ -4,7 +4,7 @@ const Footer = () => {
   return (
     <>
       <div className="font-sans text-xs leading-4 text-[#77818A] flex gap-4 p-10">
-        <span>2024-2025 Fileverse Ltd.</span>
+        <span>2024-2026 Fileverse Ltd.</span>
         <span>
           <a
             href="https://docs.fileverse.io/acceptable-use"
