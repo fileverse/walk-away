@@ -14,9 +14,8 @@ import {
 import { usePortalProvider } from '../providers/portal-provider'
 import { useNavigate, useParams } from 'react-router-dom'
 import { PreviewDdocEditor, handleContentPrint } from '@fileverse-dev/ddoc'
-import { eciesDecrypt } from '@fileverse/crypto/ecies'
-import { toBytes } from '@fileverse/crypto/utils'
 import { fromUint8Array } from 'js-base64'
+import { unwrapNewOwnerLockedFileKey } from '../utils/pq-lock'
 import {
   fetchNewFileResponse,
   decryptNewFile,
@@ -439,10 +438,18 @@ export const NewDdocFile = ({
 
       const ownerLockedFileKey = metadata.ownerLock.lockedFileKey
 
-      const fileKeyArray = eciesDecrypt(
-        toBytes(portalInformation.newOwnerPrivateKey),
-        ownerLockedFileKey
-      )
+      // FVPQ1-prefixed locks (docs published after the post-quantum
+      // upgrade) route to the portal's PQ key; everything else stays ECIES.
+      const portalKeys =
+        portalInformation.newPortalKeys?.[portalAddress?.toLowerCase()] || {}
+      const fileKeyArray = await unwrapNewOwnerLockedFileKey({
+        lockedFileKey: ownerLockedFileKey,
+        appDecryptionKey:
+          portalKeys.appDecryptionKey || portalInformation.newOwnerPrivateKey,
+        pqDecryptionKey: portalKeys.pqDecryptionKey,
+        ownerSecret: portalKeys.ownerSecret,
+        portalAddress,
+      })
 
       const fileKey = fromUint8Array(fileKeyArray)
 

@@ -16,8 +16,7 @@ import {
   reconstructGateMetadata,
   decryptTitleWithFileKey,
 } from '../utils/new-portal-utils'
-import { eciesDecrypt } from '@fileverse/crypto/ecies'
-import { toBytes } from '@fileverse/crypto/utils'
+import { unwrapNewOwnerLockedFileKey } from '../utils/pq-lock'
 import { fromUint8Array } from 'js-base64'
 
 const DsheetsRetrieveSection = () => {
@@ -329,10 +328,18 @@ export const DsheetFile = ({
 
       const ownerLockedFileKey = metadata.appLock.lockedFileKey
 
-      const fileKeyArray = eciesDecrypt(
-        toBytes(portalInformation.newOwnerPrivateKey),
-        ownerLockedFileKey
-      )
+      // FVPQ1-prefixed locks (sheets published after the post-quantum
+      // upgrade) route to the portal's PQ key; everything else stays ECIES.
+      const portalKeys =
+        portalInformation.newPortalKeys?.[portalAddress?.toLowerCase()] || {}
+      const fileKeyArray = await unwrapNewOwnerLockedFileKey({
+        lockedFileKey: ownerLockedFileKey,
+        appDecryptionKey:
+          portalKeys.appDecryptionKey || portalInformation.newOwnerPrivateKey,
+        pqDecryptionKey: portalKeys.pqDecryptionKey,
+        ownerSecret: portalKeys.ownerSecret,
+        portalAddress,
+      })
 
       const fileKey = fromUint8Array(fileKeyArray)
 

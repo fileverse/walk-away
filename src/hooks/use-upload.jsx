@@ -148,6 +148,31 @@ const useUpload = () => {
             ? newBackupKeys[0].source
             : newBackupKeys?.source)
 
+        // Per-portal key material for the retrieve pages. Fresh backup files
+        // carry the post-quantum pair (pqDecryptionKey); older ones can still
+        // derive it from ownerSecret (see utils/pq-lock.js).
+        const newBackupKeysList = Array.isArray(newBackupKeys)
+          ? newBackupKeys
+          : newBackupKeys && Object.keys(newBackupKeys).length > 0
+            ? [newBackupKeys]
+            : []
+        const newPortalKeys = {}
+        for (const k of newBackupKeysList) {
+          if (k?.portalAddress) {
+            newPortalKeys[k.portalAddress.toLowerCase()] = {
+              appDecryptionKey: k.appDecryptionKey || '',
+              pqDecryptionKey: k.pqDecryptionKey || '',
+              ownerSecret: k.ownerSecret || '',
+            }
+          }
+        }
+        // A backup without post-quantum keys predates the PQ upgrade (or the
+        // account itself). Not blocking — just worth a nudge on the upload
+        // screen to download a fresh file.
+        const prePqcBackup =
+          newBackupKeysList.length > 0 &&
+          newBackupKeysList.some((k) => !k?.pqDecryptionKey)
+
         setPortalInformation({
           legacyFileCount,
           newFileCount,
@@ -155,6 +180,8 @@ const useUpload = () => {
           legacyOwnerPrivateKey: legacyOwnerPrivateKey,
           newPortalAddresses: newPortalAddresses || [],
           newOwnerPrivateKey: firstNewBackupKey?.appDecryptionKey || '',
+          newPortalKeys,
+          prePqcBackup,
           source: source || '',
         })
         setUploadState('uploaded')
