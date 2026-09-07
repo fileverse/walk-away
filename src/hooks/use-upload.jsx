@@ -148,9 +148,10 @@ const useUpload = () => {
             ? newBackupKeys[0].source
             : newBackupKeys?.source)
 
-        // Per-portal key material for the retrieve pages. Fresh backup files
-        // carry the post-quantum pair (pqDecryptionKey); older ones can still
-        // derive it from ownerSecret (see utils/pq-lock.js).
+        // Per-portal key material for the retrieve pages. Upgraded and born
+        // post-quantum portals carry their key ring (pqKeys); the flat
+        // pqDecryptionKey of the very first PQ backup format is kept as a
+        // fallback candidate (see utils/pq-lock.js). Nothing is derived.
         const newBackupKeysList = Array.isArray(newBackupKeys)
           ? newBackupKeys
           : newBackupKeys && Object.keys(newBackupKeys).length > 0
@@ -161,17 +162,20 @@ const useUpload = () => {
           if (k?.portalAddress) {
             newPortalKeys[k.portalAddress.toLowerCase()] = {
               appDecryptionKey: k.appDecryptionKey || '',
+              pqKeys: Array.isArray(k.pqKeys) ? k.pqKeys : [],
               pqDecryptionKey: k.pqDecryptionKey || '',
-              ownerSecret: k.ownerSecret || '',
             }
           }
         }
         // A backup without post-quantum keys predates the PQ upgrade (or the
-        // account itself). Not blocking — just worth a nudge on the upload
-        // screen to download a fresh file.
+        // account itself). Documents published after the upgrade cannot be
+        // opened with it; the upload screen says so.
         const prePqcBackup =
           newBackupKeysList.length > 0 &&
-          newBackupKeysList.some((k) => !k?.pqDecryptionKey)
+          newBackupKeysList.some(
+            (k) => !(Array.isArray(k?.pqKeys) && k.pqKeys.length > 0) &&
+              !k?.pqDecryptionKey
+          )
 
         setPortalInformation({
           legacyFileCount,

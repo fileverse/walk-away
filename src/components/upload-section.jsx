@@ -147,9 +147,9 @@ const UploadSection = () => {
             uploadState === 'uploaded' &&
             portalInformation.prePqcBackup && (
               <div className="mb-3 rounded-[4px] border border-[#F16227] bg-[#FEF5E6] p-3 text-[12px] leading-[16px] font-normal text-[#363B3F]">
-                This backup file is from before the post-quantum upgrade. Your
-                documents will still open, but we recommend downloading a fresh
-                backup from your dDocs or dSheets Settings.
+                This backup file is from before the post-quantum upgrade.
+                Documents saved after the upgrade will not open with it.
+                Download a fresh backup from your dDocs or dSheets Settings.
               </div>
             )}
 

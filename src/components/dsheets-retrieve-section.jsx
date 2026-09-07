@@ -81,7 +81,8 @@ const DsheetsRetrieveSection = () => {
   useEffect(() => {
     if (
       !portalInformation.legacyOwnerPrivateKey &&
-      !portalInformation.newOwnerPrivateKey
+      !portalInformation.newOwnerPrivateKey &&
+      !(portalInformation.newPortalAddresses?.length > 0)
     ) {
       navigate('/')
     }
@@ -336,9 +337,9 @@ export const DsheetFile = ({
         lockedFileKey: ownerLockedFileKey,
         appDecryptionKey:
           portalKeys.appDecryptionKey || portalInformation.newOwnerPrivateKey,
+        pqKeys: portalKeys.pqKeys,
         pqDecryptionKey: portalKeys.pqDecryptionKey,
-        ownerSecret: portalKeys.ownerSecret,
-        portalAddress,
+        keyVersion: metadata.workspaceKeyVersion,
       })
 
       const fileKey = fromUint8Array(fileKeyArray)
