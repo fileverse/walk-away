@@ -2,6 +2,7 @@ import { withRetry, fetchFromIPFS, FAILED_IPFS_FETCH_ERROR } from './ipfs-utils'
 import { toUint8Array } from 'js-base64'
 import { Buffer } from 'buffer'
 import { setPenumbraWorkerLocation, getPenumbra } from './crypto'
+import { decompressDsheetContentIfNeeded } from './dsheet-content-compression'
 
 export const fetchNewFileResponse = async (contentIpfsHash) => {
   const fetchedResponse = await withRetry(
@@ -82,11 +83,17 @@ export const decryptNewFile = async (fileKey, response) => {
     const parsedContent = JSON.parse(contentText)
 
     // Ensure consistent return format - if it's already wrapped with "file" key, return as is
-    // Otherwise wrap it with "file" key to match expected structure
+    // Otherwise wrap it with "file" key to match expected structure.
+    // Published dSheet files store a `gz1:` gzip envelope in `.file`; inflate it
+    // back to raw base64 Yjs before the editor consumes it. Non-`gz1:` values
+    // (ddoc content, legacy dsheets) pass through unchanged.
     if (parsedContent.file) {
-      return parsedContent
+      return {
+        ...parsedContent,
+        file: decompressDsheetContentIfNeeded(parsedContent.file),
+      }
     } else {
-      return { file: parsedContent }
+      return { file: decompressDsheetContentIfNeeded(parsedContent) }
     }
   } catch (error) {
     console.error('Penumbra decryption failed:', error)

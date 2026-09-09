@@ -29,6 +29,7 @@ const DsheetsRetrieveSection = () => {
   const [portalFileCounts, setPortalFileCounts] = useState([])
 
   const [content, setContent] = useState('')
+  const [loadedHash, setLoadedHash] = useState('')
   const [contentData, setContentData] = useState({
     contentHash: '',
     fileKey: {},
@@ -118,6 +119,7 @@ const DsheetsRetrieveSection = () => {
         response
       )
       setContent(decryptedResult.file)
+      setLoadedHash(contentData.contentHash)
       setIsLoading(false)
     } catch (error) {
       setIsError(error?.message || 'Failed to Fetch content')
@@ -129,6 +131,8 @@ const DsheetsRetrieveSection = () => {
 
   useEffect(() => {
     if (!contentData.contentHash) return
+    setContent('')
+    setLoadedHash('')
     fetchContent(contentData)
   }, [contentData.contentHash])
 
@@ -193,7 +197,7 @@ const DsheetsRetrieveSection = () => {
             </div>
           </div>
 
-          {!content || isLoading ? (
+          {!content || isLoading || loadedHash !== contentData.contentHash ? (
             <div className="flex-1">
               <div className="flex justify-between items-center border-b border-[#E8EBEC] mb-4 p-[16px_24px_16px_16px] h-[60px]">
                 <div>
@@ -269,6 +273,7 @@ const DsheetsRetrieveSection = () => {
               ) : (
                 <div className="p-6 overflow-y-auto h-[calc(100vh-180px)] scrollbar-hide">
                   <DSheetEditor
+                    key={contentData.contentHash}
                     isReadOnly={true}
                     dsheetId={contentData.dsheetId}
                     sheetEditorRef={sheetEditorRef}
@@ -316,8 +321,9 @@ export const DsheetFile = ({
       const contentIPFSHash = details[3]
       const gateIPFSHash = details[4] || ''
 
-      if (!contentIPFSHash || !metadataIPFSHash)
+      if (!contentIPFSHash || !metadataIPFSHash) {
         throw new Error('metadata or content is empty')
+      }
       const metadata = await reconstructGateMetadata(
         metadataIPFSHash,
         gateIPFSHash
@@ -352,6 +358,7 @@ export const DsheetFile = ({
           fileKey,
           contentHash: contentIPFSHash,
           archVersion: metadata.version,
+          dsheetId,
         })
       }
 
