@@ -167,16 +167,6 @@ const useUpload = () => {
             }
           }
         }
-        // A backup without post-quantum keys predates the PQ upgrade (or the
-        // account itself). Documents published after the upgrade cannot be
-        // opened with it; the upload screen says so.
-        const prePqcBackup =
-          newBackupKeysList.length > 0 &&
-          newBackupKeysList.some(
-            (k) => !(Array.isArray(k?.pqKeys) && k.pqKeys.length > 0) &&
-              !k?.pqDecryptionKey
-          )
-
         setPortalInformation({
           legacyFileCount,
           newFileCount,
@@ -185,7 +175,6 @@ const useUpload = () => {
           newPortalAddresses: newPortalAddresses || [],
           newOwnerPrivateKey: firstNewBackupKey?.appDecryptionKey || '',
           newPortalKeys,
-          prePqcBackup,
           source: source || '',
         })
         setUploadState('uploaded')

@@ -10,7 +10,6 @@ const PortalProviderContext = createContext({
     newPortalAddresses: [],
     newOwnerPrivateKey: '',
     newPortalKeys: {},
-    prePqcBackup: false,
     source: '',
   },
 })
@@ -26,7 +25,6 @@ const PortalProvider = ({ children }) => {
     newPortalAddresses: [],
     newOwnerPrivateKey: '',
     newPortalKeys: {},
-    prePqcBackup: false,
     source: '',
   })
   return (

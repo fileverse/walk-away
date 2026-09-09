@@ -6,7 +6,6 @@ import {
 } from '../assets/icons'
 import { useState } from 'react'
 import useUpload from '../hooks/use-upload'
-import { usePortalProvider } from '../providers/portal-provider'
 import { Modal } from './modal'
 import { SettingsModalContent } from './settings-modal-content'
 import { SettingsIcon } from '../assets/icons'
@@ -14,7 +13,6 @@ import { SettingsIcon } from '../assets/icons'
 const UploadSection = () => {
   const [showKeyHelp, setShowKeyHelp] = useState(false)
   const [showModal, setShowModal] = useState(false)
-  const { portalInformation } = usePortalProvider()
 
   const {
     uploadState,
@@ -142,16 +140,6 @@ const UploadSection = () => {
               </button>
             </p>
           </div>
-
-          {file &&
-            uploadState === 'uploaded' &&
-            portalInformation.prePqcBackup && (
-              <div className="mb-3 rounded-[4px] border border-[#F16227] bg-[#FEF5E6] p-3 text-[12px] leading-[16px] font-normal text-[#363B3F]">
-                This backup file is from before the post-quantum upgrade.
-                Documents saved after the upgrade will not open with it.
-                Download a fresh backup from your dDocs or dSheets Settings.
-              </div>
-            )}
 
           {file && (
             <div className="p-1 mb-4 hover:bg-[#F2F4F5] transition-colors duration-200 rounded-[4px]">
