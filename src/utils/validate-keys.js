@@ -3,6 +3,7 @@ import {
   PROD_DDOC_DOMAIN,
   PROD_DSHEETS_DOMAIN,
 } from './constants'
+import { hasEcPair, hasPqRing } from './get-portal-keys'
 
 export const keysInLegacySecretFile = [
   'portalAddress',
@@ -15,12 +16,9 @@ export const keysInLegacySecretFile = [
   'source',
 ]
 
-export const keysInNewSecretFile = [
-  'portalAddress',
-  'appEncryptionKey',
-  'appDecryptionKey',
-  'source',
-]
+// Plus an EC pair (appEncryptionKey + appDecryptionKey) and/or a
+// post-quantum ring (pqKeys), checked separately below.
+export const keysInNewSecretFile = ['portalAddress', 'source']
 
 export class InvalidRecoveryJsonError extends Error {
   constructor(message) {
@@ -67,6 +65,9 @@ export const validateNewKey = (keysObject) => {
       throw new InvalidRecoveryJsonError('Recovery file is missing keys')
     }
   })
+  if (!hasEcPair(keysObject) && !hasPqRing(keysObject)) {
+    throw new InvalidRecoveryJsonError('Recovery file is missing keys')
+  }
 }
 
 export const validateKey = (legacyKeysObject, newKeysArray) => {

@@ -61,3 +61,14 @@ export const getNewPortalKeysVerifiers = async (contractAddress) => {
     args: [0],
   })
 }
+
+// Post-quantum ring entries live at their own verifier index (the entry's
+// `version`); an upgraded portal keeps its EC pair at 0.
+export const getNewPortalKeysVerifiersAt = async (contractAddress, version) => {
+  return await publicClient.readContract({
+    address: contractAddress,
+    abi: newAbi,
+    functionName: 'keyVerifiers',
+    args: [version],
+  })
+}

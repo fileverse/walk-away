@@ -148,6 +148,25 @@ const useUpload = () => {
             ? newBackupKeys[0].source
             : newBackupKeys?.source)
 
+        // Per-portal key material for the retrieve pages. Upgraded and born
+        // post-quantum portals carry their key ring (pqKeys); the flat
+        // pqDecryptionKey of the very first PQ backup format is kept as a
+        // fallback candidate (see utils/pq-lock.js). Nothing is derived.
+        const newBackupKeysList = Array.isArray(newBackupKeys)
+          ? newBackupKeys
+          : newBackupKeys && Object.keys(newBackupKeys).length > 0
+            ? [newBackupKeys]
+            : []
+        const newPortalKeys = {}
+        for (const k of newBackupKeysList) {
+          if (k?.portalAddress) {
+            newPortalKeys[k.portalAddress.toLowerCase()] = {
+              appDecryptionKey: k.appDecryptionKey || '',
+              pqKeys: Array.isArray(k.pqKeys) ? k.pqKeys : [],
+              pqDecryptionKey: k.pqDecryptionKey || '',
+            }
+          }
+        }
         setPortalInformation({
           legacyFileCount,
           newFileCount,
@@ -155,6 +174,7 @@ const useUpload = () => {
           legacyOwnerPrivateKey: legacyOwnerPrivateKey,
           newPortalAddresses: newPortalAddresses || [],
           newOwnerPrivateKey: firstNewBackupKey?.appDecryptionKey || '',
+          newPortalKeys,
           source: source || '',
         })
         setUploadState('uploaded')

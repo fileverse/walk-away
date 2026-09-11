@@ -113,8 +113,9 @@ const UploadSection = () => {
             </button>
           </div>
           <div
-            className={`border-[1px] border-dashed ${dragActive ? 'border-blue-500 bg-blue-50' : 'border-[#E8EBEC]'
-              } 
+            className={`border-[1px] border-dashed ${
+              dragActive ? 'border-blue-500 bg-blue-50' : 'border-[#E8EBEC]'
+            } 
                   rounded font-normal text-sm leading-5 text-[#A1AAB1] p-8 text-center mb-4`}
             onDragEnter={handleDrag}
             onDragLeave={handleDrag}
@@ -198,10 +199,11 @@ const UploadSection = () => {
           </div>
           <button
             className={`p-4 mt-4 w-full rounded font-medium text-[14px] leading-[20px] cursor-pointer
-                  ${file && uploadState === 'uploaded'
-                ? 'bg-[#FFDF0A] text-black hover:bg-[#EFC703]'
-                : 'bg-[#E8EBEC] text-[#A1AAB1]'
-              }`}
+                  ${
+                    file && uploadState === 'uploaded'
+                      ? 'bg-[#FFDF0A] text-black hover:bg-[#EFC703]'
+                      : 'bg-[#E8EBEC] text-[#A1AAB1]'
+                  }`}
             disabled={!file || uploadState !== 'uploaded'}
             onClick={handleRetrieveClick}
           >

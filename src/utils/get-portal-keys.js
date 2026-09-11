@@ -23,16 +23,38 @@ function isNewBackupKeysFormat(value) {
   )
 }
 
+// A post-quantum ring: one entry per portal key version, private key inside.
+export function hasPqRing(value) {
+  return (
+    Array.isArray(value?.pqKeys) &&
+    value.pqKeys.length > 0 &&
+    value.pqKeys.every(
+      (k) =>
+        k &&
+        typeof k.publicKey === 'string' &&
+        typeof k.privateKey === 'string' &&
+        Number.isInteger(k.version)
+    )
+  )
+}
+
+export function hasEcPair(value) {
+  return Boolean(value?.appEncryptionKey && value?.appDecryptionKey)
+}
+
 function isNewBackupKeys(value) {
   return (
     typeof value === 'object' &&
     'portalAddress' in value &&
     'ownerDid' in value &&
     'ownerSecret' in value &&
-    'appEncryptionKey' in value &&
-    'appDecryptionKey' in value &&
-    'permissionAddress' in value &&
-    'source' in value
+    // permissionAddress is optional: ddocs only writes it when the portal has
+    // a permission contract, and portals created after the semaphore cleanup
+    // (ddocs #1100) never deploy one. validateNewKey does not require it.
+    'source' in value &&
+    // Upgraded portals carry both; born post-quantum portals carry only the
+    // ring; classic portals only the EC pair.
+    (hasEcPair(value) || hasPqRing(value))
   )
 }
 
