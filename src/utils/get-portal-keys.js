@@ -48,7 +48,9 @@ function isNewBackupKeys(value) {
     'portalAddress' in value &&
     'ownerDid' in value &&
     'ownerSecret' in value &&
-    'permissionAddress' in value &&
+    // permissionAddress is optional: ddocs only writes it when the portal has
+    // a permission contract, and portals created after the semaphore cleanup
+    // (ddocs #1100) never deploy one. validateNewKey does not require it.
     'source' in value &&
     // Upgraded portals carry both; born post-quantum portals carry only the
     // ring; classic portals only the EC pair.
