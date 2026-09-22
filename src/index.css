@@ -52,6 +52,17 @@ body {
   margin-top: 0 !important;
 }
 
+/* Fit the editor to its host instead of 100vh, so the host never has to
+   scroll. dsheet's cell input box is position: fixed and is placed from the
+   sheet's own scroll only; any outer scroll makes it drift over the page. */
+.dsheet-host .dsheet-editor {
+  height: 100% !important;
+}
+
+.dsheet-host .dsheet-editor-main {
+  height: 100% !important;
+}
+
 .fortune-stat-area {
   display: none !important;
 }
