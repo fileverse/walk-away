@@ -271,7 +271,10 @@ const DsheetsRetrieveSection = () => {
                   </p>
                 </div>
               ) : (
-                <div className="p-6 overflow-y-auto h-[calc(100vh-180px)] scrollbar-hide">
+                <div className="dsheet-host p-6 overflow-hidden h-[calc(100vh-180px)]">
+                  {/* The sheet scrolls inside itself. This wrapper must not scroll:
+                      dsheet's cell editor is position: fixed and only follows the
+                      sheet's own scroll, so an outer scroll leaves it floating. */}
                   <DSheetEditor
                     key={contentData.contentHash}
                     isReadOnly={true}
