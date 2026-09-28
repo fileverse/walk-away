@@ -207,7 +207,7 @@ const UploadSection = () => {
             disabled={!file || uploadState !== 'uploaded'}
             onClick={handleRetrieveClick}
           >
-            Retrieve documents
+            Retrieve files
           </button>
           <Modal
             open={showModal}
