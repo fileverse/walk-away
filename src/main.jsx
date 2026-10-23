@@ -2,6 +2,9 @@ import { createRoot } from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App.jsx'
 import './index.css'
+import '@fileverse/ui/styles/base'
+import 'katex/dist/katex.min.css'
+import '@fileverse-dev/ddoc/styles'
 import PortalProvider from './providers/portal-provider.jsx'
 // NOTE: React.StrictMode is intentionally omitted. Its dev-only double-mount
 // destroys @fileverse-dev/dsheet's Y.Doc (use-editor-sync cleanup nulls
