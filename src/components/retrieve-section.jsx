@@ -13,7 +13,12 @@ import {
 } from '../utils/contract-functions'
 import { usePortalProvider } from '../providers/portal-provider'
 import { useNavigate, useParams } from 'react-router-dom'
-import { PreviewDdocEditor, handleContentPrint } from '@fileverse-dev/ddoc'
+import {
+  DdocExportModal,
+  PreviewDdocEditor,
+  handleContentPrint,
+  useExportHeadlessEditorContent,
+} from '@fileverse-dev/ddoc'
 import { fromUint8Array } from 'js-base64'
 import { unwrapNewOwnerLockedFileKey } from '../utils/pq-lock'
 import {
@@ -24,6 +29,17 @@ import {
   reconstructGateMetadata,
   decryptTitleWithFileKey,
 } from '../utils/new-portal-utils'
+
+// Yjs bodies (base64) hold every tab; legacy JSON bodies hold a single page.
+const isYjsContent = (value) => {
+  if (typeof value !== 'string') return false
+  try {
+    JSON.parse(value)
+    return false
+  } catch {
+    return true
+  }
+}
 
 export const Skeleton = ({ className = '' }) => {
   return (
@@ -117,19 +133,40 @@ const RetrieveSection = () => {
   }
 
   const editorRef = useRef(null)
+  // Held in state so the editor gets the column once it is in the page.
+  const [tabColumn, setTabColumn] = useState(null)
+  // ddoc only draws the tab list while showTOC is on; its toggle flips it.
+  const [showTOC, setShowTOC] = useState(true)
+  const { exportContent, exportModalProps } = useExportHeadlessEditorContent()
 
+  // The preview editor's ref only exports the tab on screen, so tabbed docs
+  // go through the export modal, which can export the current or all tabs.
   const exportPdf = () => {
-    if (!content || !editorRef.current) return
+    if (!content) return
+    if (isYjsContent(content)) {
+      exportContent({
+        content,
+        fileName: contentData.contentHash,
+        initialFormat: 'pdf',
+      })
+      return
+    }
+    if (!editorRef.current) return
     handleContentPrint(editorRef.current.getEditor().getHTML())
   }
 
   const exportMd = () => {
+    if (!content) return
+    if (isYjsContent(content)) {
+      exportContent({
+        content,
+        fileName: contentData.contentHash,
+        initialFormat: 'md',
+      })
+      return
+    }
     if (!editorRef.current) return
     editorRef.current.exportContentAsMarkDown(contentData.contentHash + '.md')
-  }
-
-  const style = async () => {
-    return await import('@fileverse-dev/ddoc/styles')
   }
 
   useEffect(() => {
@@ -281,20 +318,29 @@ const RetrieveSection = () => {
                   </p>
                 </div>
               ) : (
-                <div className="p-6 overflow-y-auto h-[calc(100vh-180px)] scrollbar-hide">
-                  <PreviewDdocEditor
-                    className={`${style()}`}
-                    ref={editorRef}
-                    initialContent={content}
-                    isPreviewMode={true}
-                    unFocused
+                <div className="flex h-[calc(100vh-180px)]">
+                  <div
+                    ref={setTabColumn}
+                    className="relative w-[240px] shrink-0 border-r border-gray-200 overflow-y-auto"
                   />
+                  <div className="flex-1 min-w-0 p-6 overflow-y-auto scrollbar-hide">
+                    <PreviewDdocEditor
+                      ref={editorRef}
+                      initialContent={content}
+                      isPreviewMode={true}
+                      unFocused
+                      tabSectionContainer={tabColumn ?? undefined}
+                      showTOC={showTOC}
+                      setShowTOC={setShowTOC}
+                    />
+                  </div>
                 </div>
               )}
             </div>
           )}
         </div>
       </div>
+      <DdocExportModal {...exportModalProps} />
     </div>
   )
 }
